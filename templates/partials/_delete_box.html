@@ -1,0 +1,6 @@
+{% comment %} Очаква: object_label, cancel_url; по желание: form (само за четене) {% endcomment %}
+<section class="danger-zone">
+    <h1>Изтриване на {{ object_label }}?</h1>
+    <p>Това действие <strong>не може да бъде отменено</strong>. Прегледай данните и потвърди.</p>
+    {% include 'partials/_form.html' with submit_label="Да, изтрий" danger=True %}
+</section>

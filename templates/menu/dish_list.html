@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Ястия{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Ястия</h1>
+        {% with total=page_obj.paginator.count %}<p class="muted">Намерени: {{ total }}</p>{% endwith %}
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-ghost" href="{% url 'menu:category-list' %}">Категории</a>
+        <a class="btn btn-ghost" href="{% url 'menu:allergen-list' %}">Алергени</a>
+        <a class="btn btn-primary" href="{% url 'menu:dish-create' %}">+ Ново ястие</a>
+    </div>
+</div>
+
+<form method="get" class="filter-bar">
+    <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Търси по име или описание…" aria-label="Търсене">
+
+    <select name="category" aria-label="Категория">
+        <option value="">Всички категории</option>
+        {% for category in categories %}
+            <option value="{{ category.pk }}" {% if request.GET.category == category.pk|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="without" aria-label="Без алерген">
+        <option value="">Без филтър за алергени</option>
+        {% for allergen in allergens %}
+            <option value="{{ allergen.pk }}" {% if request.GET.without == allergen.pk|stringformat:"s" %}selected{% endif %}>Без „{{ allergen.name|lower }}“</option>
+        {% endfor %}
+    </select>
+
+    <select name="sort" aria-label="Подреди по">
+        <option value="name" {% if request.GET.sort == "name" or not request.GET.sort %}selected{% endif %}>Име (А–Я)</option>
+        <option value="price" {% if request.GET.sort == "price" %}selected{% endif %}>Цена: възходяща</option>
+        <option value="-price" {% if request.GET.sort == "-price" %}selected{% endif %}>Цена: низходяща</option>
+        <option value="calories" {% if request.GET.sort == "calories" %}selected{% endif %}>Най-малко калории</option>
+    </select>
+
+    <label class="check-inline">
+        <input type="checkbox" name="veg" value="1" {% if request.GET.veg == "1" %}checked{% endif %}> &#127807; Само вегетариански
+    </label>
+
+    <button type="submit" class="btn btn-primary">Филтрирай</button>
+    {% if request.GET %}<a class="btn btn-ghost" href="{% url 'menu:dish-list' %}">Изчисти</a>{% endif %}
+</form>
+
+{% if dishes %}
+    <div class="card-grid">
+        {% for dish in dishes %}
+            {% include 'partials/_dish_card.html' %}
+        {% endfor %}
+    </div>
+    {% include 'partials/_pagination.html' %}
+{% else %}
+    {% url 'menu:dish-create' as add_dish_url %}
+    {% include 'partials/_empty_state.html' with message="Няма ястия, които отговарят на филтрите." action_url=add_dish_url action_label="Добави ястие" %}
+{% endif %}
+{% endblock %}

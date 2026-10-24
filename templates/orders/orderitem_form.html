@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load kitchen_tags %}
+
+{% block title %}Добавяне на ястие{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <ol class="steps">
+        <li class="done">Данни за поръчката</li>
+        <li class="active">Избор на ястия</li>
+        <li>Готово</li>
+    </ol>
+    <h1>Добави ястие към поръчка № {{ order.pk|stringformat:"04d" }}</h1>
+    <p class="muted">Меню за {{ order.daily_menu.date|date:"l, d.m.Y" }} · {{ order.customer_name }}, {{ order.class_group }}</p>
+
+    {% if order.items.exists %}
+        <div class="card card-pad mini-receipt">
+            <p class="small"><strong>Вече в поръчката:</strong></p>
+            <ul class="order-lines">
+                {% for item in order.items.all %}
+                    <li><span class="qty">{{ item.quantity }}&times;</span> {{ item.dish.name }} <span class="muted">{{ item.line_total|euro }}</span></li>
+                {% endfor %}
+            </ul>
+            <p class="small">Общо: <strong class="price">{{ order.total|euro }}</strong></p>
+        </div>
+    {% endif %}
+
+    {% url 'orders:detail' order.pk as cancel_url %}
+    {% include 'partials/_form.html' with submit_label="Добави към поръчката" %}
+
+    <p class="hint"><a href="{% url 'orders:detail' order.pk %}">Готово, към поръчката &rarr;</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% comment %} Очаква: message; по желание: action_url, action_label {% endcomment %}
+<div class="empty-state">
+    <p class="empty-icon" aria-hidden="true">&#127869;</p>
+    <p>{{ message }}</p>
+    {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label|default:"Добави" }}</a>{% endif %}
+</div>

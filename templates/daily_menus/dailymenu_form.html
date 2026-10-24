@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Редакция на меню{% else %}Ново дневно меню{% endif %}{% endblock %}
+
+{% block content %}
+<div class="form-page wide">
+    <h1>{% if object %}Меню за {{ object.date|date:"d.m.Y" }}{% else %}Ново дневно меню{% endif %}</h1>
+    <p class="muted">Избери учебен ден и отметни ястията, които кухнята ще предлага. Показват се само ястията, които в момента се предлагат.</p>
+
+    {% if object %}
+        {% url 'daily_menus:detail' object.pk as cancel_url %}
+    {% else %}
+        {% url 'daily_menus:list' as cancel_url %}
+    {% endif %}
+    {% include 'partials/_form.html' with submit_label=object|yesno:"Запази промените,Публикувай менюто" %}
+
+    <p class="hint">Липсва ястие? <a href="{% url 'menu:dish-create' %}">Добави ново ястие</a>.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Алергени{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Алергени</h1>
+        <p class="muted">Номерата се показват до всяко ястие в менюто.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'menu:allergen-create' %}">+ Нов алерген</a>
+</div>
+
+{% if allergens %}
+    <div class="card-grid small-cards">
+        {% for allergen in allergens %}
+            <a class="card card-pad allergen-card" href="{% url 'menu:dish-list' %}?without={{ allergen.pk }}" title="Покажи ястията без този алерген">
+                <span class="allergen big">{{ allergen.number }}</span>
+                <span>
+                    <strong>{{ allergen.name }}</strong>
+                    <span class="muted small">в {{ allergen.dishes.count }} ястия</span>
+                </span>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    {% url 'menu:allergen-create' as add_allergen_url %}
+    {% include 'partials/_empty_state.html' with message="Все още няма въведени алергени." action_url=add_allergen_url action_label="Добави алерген" %}
+{% endif %}
+{% endblock %}

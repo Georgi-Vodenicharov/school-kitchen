@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Категории{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Категории</h1>
+        <p class="muted">Подредбата определя реда в дневното меню.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'menu:category-create' %}">+ Нова категория</a>
+</div>
+
+{% if categories %}
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th class="num">Ред</th><th>Категория</th><th class="num">Ястия</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td class="num">{{ category.position }}</td>
+                        <td><a href="{% url 'menu:dish-list' %}?category={{ category.pk }}">{{ category.name }}</a></td>
+                        <td class="num">{{ category.dishes.count }}</td>
+                        <td class="num"><a class="btn btn-ghost btn-sm" href="{% url 'menu:category-edit' category.pk %}">Редактирай</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    {% url 'menu:category-create' as add_category_url %}
+    {% include 'partials/_empty_state.html' with message="Все още няма категории." action_url=add_category_url action_label="Създай категория" %}
+{% endif %}
+{% endblock %}

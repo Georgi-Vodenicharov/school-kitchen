@@ -1,0 +1,35 @@
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <p class="footer-brand">&#127858; Училищна кухня</p>
+            <p class="muted">Професионална гимназия по механотехника, строителство и съобщения „Пейо К. Яворов“, гр. Гоце Делчев</p>
+        </div>
+        <div>
+            <p class="footer-title">Меню</p>
+            <ul>
+                <li><a href="{% url 'daily_menus:list' %}">Дневни менюта</a></li>
+                <li><a href="{% url 'menu:dish-list' %}">Всички ястия</a></li>
+                <li><a href="{% url 'menu:category-list' %}">Категории</a></li>
+                <li><a href="{% url 'menu:allergen-list' %}">Алергени</a></li>
+            </ul>
+        </div>
+        <div>
+            <p class="footer-title">Поръчки</p>
+            <ul>
+                <li><a href="{% url 'orders:create' %}">Нова поръчка</a></li>
+                <li><a href="{% url 'orders:list' %}">Всички поръчки</a></li>
+                <li><a href="{% url 'orders:kitchen' %}">Табло на кухнята</a></li>
+            </ul>
+        </div>
+        <div>
+            <p class="footer-title">Информация</p>
+            <ul>
+                <li><a href="{% url 'common:about' %}">За кухнята</a></li>
+                <li><a href="{% url 'common:home' %}">Начало</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <small>&copy; {% now "Y" %} Училищна кухня · Учебен проект по Django Basics</small>
+    </div>
+</footer>

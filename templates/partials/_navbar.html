@@ -1,0 +1,27 @@
+{% load kitchen_tags %}
+<header class="site-header">
+    <nav class="container navbar">
+        <a class="brand" href="{% url 'common:home' %}">
+            <span class="brand-mark" aria-hidden="true">&#127858;</span>
+            <span class="brand-text">
+                <strong>Училищна кухня</strong>
+                <small>ПГ по МСС „Пейо К. Яворов“</small>
+            </span>
+        </a>
+
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-burger" aria-label="Меню">
+            <span></span><span></span><span></span>
+        </label>
+
+        <ul class="nav-links">
+            <li><a class="{% nav_active 'common' %}" href="{% url 'common:home' %}">Начало</a></li>
+            <li><a class="{% nav_active 'daily_menus' %}" href="{% url 'daily_menus:list' %}">Дневно меню</a></li>
+            <li><a class="{% nav_active 'menu' %}" href="{% url 'menu:dish-list' %}">Ястия</a></li>
+            <li><a class="{% nav_active 'orders' %}" href="{% url 'orders:list' %}">Поръчки</a></li>
+            <li><a href="{% url 'orders:kitchen' %}">Кухня</a></li>
+            <li><a href="{% url 'common:about' %}">За нас</a></li>
+            <li><a class="btn btn-accent btn-sm" href="{% url 'orders:create' %}">+ Нова поръчка</a></li>
+        </ul>
+    </nav>
+</header>

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Нов алерген{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>Нов алерген</h1>
+    <p class="muted">Според Регламент (ЕС) № 1169/2011 има 14 основни алергена: 1 Глутен, 2 Ракообразни, 3 Яйца, 4 Риба, 5 Фъстъци, 6 Соя, 7 Мляко, 8 Ядки, 9 Целина, 10 Синап, 11 Сусам, 12 Серен диоксид, 13 Лупина, 14 Мекотели.</p>
+    {% url 'menu:allergen-list' as cancel_url %}
+    {% include 'partials/_form.html' with submit_label="Добави алерген" %}
+</div>
+{% endblock %}

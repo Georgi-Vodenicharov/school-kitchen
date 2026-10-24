@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Табло на кухнята{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>&#128104;&#8205;&#127859; Табло на кухнята</h1>
+        <p class="muted">Активните поръчки по статус. Натисни бутона на картата, за да я преместиш към следващия етап.</p>
+    </div>
+    <a class="btn btn-ghost" href="{% url 'orders:list' %}?status=served">Получени поръчки</a>
+</div>
+
+<div class="board">
+    {% for column in columns %}
+        <section class="board-column board-{{ column.status }}">
+            <header class="board-column-head">
+                <h2>{{ column.label }}</h2>
+                <span class="count">{{ column.orders|length }}</span>
+            </header>
+            <div class="board-cards">
+                {% for order in column.orders %}
+                    {% include 'partials/_order_card.html' with show_actions=True %}
+                {% empty %}
+                    <p class="board-empty">Няма поръчки</p>
+                {% endfor %}
+            </div>
+        </section>
+    {% endfor %}
+</div>
+{% endblock %}

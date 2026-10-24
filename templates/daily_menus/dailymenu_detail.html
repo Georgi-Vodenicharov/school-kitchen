@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load kitchen_tags %}
+
+{% block title %}Меню за {{ menu.date|date:"d.m.Y" }}{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{% url 'daily_menus:list' %}">&larr; Към всички менюта</a>
+
+<div class="menu-sheet">
+    <header class="menu-sheet-head">
+        <p class="eyebrow">{{ menu.date|date:"l, d F Y"|capfirst }}</p>
+        <h1>{{ menu.title|default:"Обедно меню" }}</h1>
+        {% if menu.is_today %}<span class="tag tag-accent">Днешно меню</span>{% elif menu.is_past %}<span class="tag tag-muted">Минало меню</span>{% endif %}
+        {% if menu.note %}<p class="menu-note">{{ menu.note }}</p>{% endif %}
+    </header>
+
+    {% regroup menu_dishes by category as dishes_by_category %}
+    {% for group in dishes_by_category %}
+        <section class="menu-section">
+            <h2>{{ group.grouper.name }}</h2>
+            <ul class="menu-list">
+                {% for dish in group.list %}
+                    {% include 'partials/_menu_dish_row.html' %}
+                {% endfor %}
+            </ul>
+        </section>
+    {% empty %}
+        <p class="muted">В това меню все още няма ястия.</p>
+    {% endfor %}
+
+    <footer class="menu-sheet-foot">
+        <p class="muted small">Числата до ястията са номера на <a href="{% url 'menu:allergen-list' %}">алергени</a>. Общо ястия: {{ menu_dishes|length }}.</p>
+        <div class="detail-actions">
+            {% if not menu.is_past %}
+                <a class="btn btn-accent" href="{% url 'orders:create' %}?menu={{ menu.pk }}">Поръчай от това меню</a>
+            {% endif %}
+            <a class="btn btn-ghost" href="{% url 'orders:list' %}?menu={{ menu.pk }}">Поръчки ({{ menu.orders.count }})</a>
+            <a class="btn btn-ghost" href="{% url 'daily_menus:edit' menu.pk %}">Редактирай</a>
+            <a class="btn btn-danger-ghost" href="{% url 'daily_menus:delete' menu.pk %}">Изтрий</a>
+        </div>
+    </footer>
+</div>
+{% endblock %}

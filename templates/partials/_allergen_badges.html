@@ -1,0 +1,8 @@
+{% comment %} Шаблон на inclusion тага {% allergen_badges dish %}. Получава: allergens {% endcomment %}
+{% if allergens %}
+    <span class="allergens" title="Алергени">
+        {% for allergen in allergens %}
+            <span class="allergen" title="{{ allergen.name }}">{{ allergen.number }}</span>
+        {% endfor %}
+    </span>
+{% endif %}

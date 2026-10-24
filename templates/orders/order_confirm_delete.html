@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Изтриване на поръчка{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    {% url 'orders:detail' object.pk as cancel_url %}
+    {% with order_no=object.pk|stringformat:"04d" %}
+        {% with object_label="поръчка № "|add:order_no %}
+            {% include 'partials/_delete_box.html' %}
+        {% endwith %}
+    {% endwith %}
+    {% if object.items.exists %}
+        <p class="alert alert-warning">Заедно с поръчката ще бъдат изтрити и {{ object.items.count }} реда с ястия.</p>
+    {% endif %}
+</div>
+{% endblock %}

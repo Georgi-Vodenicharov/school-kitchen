@@ -1,0 +1,27 @@
+{% load kitchen_tags %}
+<article class="order-card">
+    <header class="order-card-head">
+        <a class="order-number" href="{% url 'orders:detail' order.pk %}">№ {{ order.pk|stringformat:"04d" }}</a>
+        {% include 'partials/_status_badge.html' %}
+    </header>
+    <p class="order-customer"><strong>{{ order.customer_name }}</strong> · {{ order.class_group }}</p>
+    <p class="muted small">За {{ order.daily_menu.date|date:"l, d.m" }} · създадена {{ order.created_at|time:"H:i" }}</p>
+    <ul class="order-lines">
+        {% for item in order.items.all %}
+            <li><span class="qty">{{ item.quantity }}&times;</span> {{ item.dish.name }}</li>
+        {% empty %}
+            <li class="muted">Няма добавени ястия</li>
+        {% endfor %}
+    </ul>
+    {% if order.note %}<p class="order-note">&#9998; {{ order.note|truncatechars:60 }}</p>{% endif %}
+    <footer class="order-card-foot">
+        <span class="price">{{ order.total|euro }}</span>
+        {% if show_actions and order.next_status_label %}
+            <form method="post" action="{% url 'orders:advance' order.pk %}">
+                {% csrf_token %}
+<input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" class="btn btn-primary btn-sm">&rarr; {{ order.next_status_label }}</button>
+            </form>
+        {% endif %}
+    </footer>
+</article>

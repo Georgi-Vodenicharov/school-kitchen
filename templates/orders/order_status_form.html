@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Статус на поръчка{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>Статус на поръчка № {{ object.pk|stringformat:"04d" }}</h1>
+    <p class="muted">Ръчна смяна на статуса, например при отказана поръчка. Останалите данни са само за преглед.</p>
+    {% url 'orders:detail' object.pk as cancel_url %}
+    {% include 'partials/_form.html' with submit_label="Смени статуса" %}
+</div>
+{% endblock %}

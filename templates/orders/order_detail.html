@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load kitchen_tags %}
+
+{% block title %}Поръчка № {{ order.pk|stringformat:"04d" }}{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{% url 'orders:list' %}">&larr; Към всички поръчки</a>
+
+<div class="order-layout">
+    <article class="receipt">
+        <header class="receipt-head">
+            <div>
+                <p class="eyebrow">Поръчка</p>
+                <h1>№ {{ order.pk|stringformat:"04d" }}</h1>
+            </div>
+            {% include 'partials/_status_badge.html' %}
+        </header>
+
+        <dl class="facts">
+            <div><dt>Ученик</dt><dd>{{ order.customer_name }}</dd></div>
+            <div><dt>Клас</dt><dd>{{ order.class_group }}</dd></div>
+            <div><dt>За дата</dt><dd><a href="{% url 'daily_menus:detail' order.daily_menu.pk %}">{{ order.daily_menu.date|date:"d.m.Y" }}</a></dd></div>
+            <div><dt>Създадена</dt><dd>{{ order.created_at|date:"d.m.Y H:i" }}</dd></div>
+        </dl>
+
+        {% if items %}
+            <table class="table receipt-table">
+                <thead>
+                    <tr>
+                        <th>Ястие</th>
+                        <th class="num">Бр.</th>
+                        <th class="num">Ед. цена</th>
+                        <th class="num">Общо</th>
+                        {% if order.can_be_edited %}<th></th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td><a href="{% url 'menu:dish-detail' item.dish.pk %}">{{ item.dish.name }}</a></td>
+                            <td class="num">{{ item.quantity }}</td>
+                            <td class="num">{{ item.unit_price|euro }}</td>
+                            <td class="num">{{ item.line_total|euro }}</td>
+                            {% if order.can_be_edited %}
+                                <td class="num"><a class="link-danger" href="{% url 'orders:item-delete' item.pk %}" title="Премахни">&times;</a></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong>Общо за плащане</strong></td>
+                        <td class="num"><strong class="price">{{ order.total|euro }}</strong></td>
+                        {% if order.can_be_edited %}<td></td>{% endif %}
+                    </tr>
+                </tfoot>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <p>Поръчката все още е празна.</p>
+                {% if order.can_be_edited %}<a class="btn btn-accent" href="{% url 'orders:item-add' order.pk %}">+ Добави първото ястие</a>{% endif %}
+            </div>
+        {% endif %}
+
+        {% if order.note %}
+            <p class="order-note">&#9998; {{ order.note|linebreaksbr }}</p>
+        {% endif %}
+    </article>
+
+    <aside class="order-side">
+        <div class="card card-pad">
+            <h2 class="h3">Действия</h2>
+            <div class="stack">
+                {% if order.can_be_edited %}
+                    <a class="btn btn-accent" href="{% url 'orders:item-add' order.pk %}">+ Добави ястие</a>
+                    <a class="btn btn-ghost" href="{% url 'orders:edit' order.pk %}">Редактирай данните</a>
+                {% else %}
+                    <p class="muted small">Поръчката вече се обработва от кухнята и не може да се променя.</p>
+                {% endif %}
+                {% if order.next_status_label %}
+                    <form method="post" action="{% url 'orders:advance' order.pk %}">
+                        {% csrf_token %}
+<input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn btn-primary full">&rarr; {{ order.next_status_label }}</button>
+                    </form>
+                {% endif %}
+                <a class="btn btn-ghost" href="{% url 'orders:status' order.pk %}">Смени статуса</a>
+                <a class="btn btn-danger-ghost" href="{% url 'orders:delete' order.pk %}">Изтрий поръчката</a>
+            </div>
+        </div>
+        <p class="muted small">Последна промяна: {{ order.updated_at|timesince }} назад</p>
+    </aside>
+</div>
+{% endblock %}

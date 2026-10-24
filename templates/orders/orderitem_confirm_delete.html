@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load kitchen_tags %}
+
+{% block title %}Премахване на ястие{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <section class="danger-zone">
+        <h1>Премахване от поръчката?</h1>
+        <p>Ще премахнеш <strong>{{ object.quantity }} &times; {{ object.dish.name }}</strong> ({{ object.line_total|euro }}) от поръчка № {{ object.order.pk|stringformat:"04d" }}.</p>
+        {% url 'orders:detail' object.order.pk as cancel_url %}
+        {% include 'partials/_form.html' with submit_label="Да, премахни" danger=True %}
+    </section>
+</div>
+{% endblock %}

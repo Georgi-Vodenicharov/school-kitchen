@@ -1,0 +1,32 @@
+{% comment %}
+    Преизползваема форма.
+    Очаква: form; по желание: submit_label, cancel_url, danger
+{% endcomment %}
+<form method="post" class="form-card" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-error">
+            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+    {% endif %}
+
+    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+
+    {% for field in form.visible_fields %}
+        <div class="field field--{{ field.widget_type }}{% if field.errors %} has-error{% endif %}{% if field.field.disabled %} is-disabled{% endif %}">
+            <label for="{{ field.id_for_label }}">
+                {{ field.label }}{% if field.field.required and not field.field.disabled %}<span class="req">*</span>{% endif %}
+                {% if field.field.disabled %}<span class="tag tag-muted">само за четене</span>{% endif %}
+            </label>
+            {{ field }}
+            {% if field.help_text %}<small class="help">{{ field.help_text }}</small>{% endif %}
+            {% for error in field.errors %}<small class="error">{{ error }}</small>{% endfor %}
+        </div>
+    {% endfor %}
+
+    <div class="form-actions">
+        <button type="submit" class="btn {% if danger %}btn-danger{% else %}btn-primary{% endif %}">{{ submit_label|default:"Запази" }}</button>
+        {% if cancel_url %}<a href="{{ cancel_url }}" class="btn btn-ghost">Отказ</a>{% endif %}
+    </div>
+</form>

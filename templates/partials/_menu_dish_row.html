@@ -1,0 +1,13 @@
+{% load kitchen_tags %}
+<li class="menu-row">
+    <div class="menu-row-main">
+        <a class="menu-row-name" href="{% url 'menu:dish-detail' dish.pk %}">{{ dish.name }}</a>
+        {% if dish.is_vegetarian %}<span title="Вегетарианско">&#127807;</span>{% endif %}
+        <span class="menu-row-leader" aria-hidden="true"></span>
+        <span class="price">{{ dish.price|euro }}</span>
+    </div>
+    <div class="menu-row-sub">
+        <span class="muted small">{{ dish.weight_grams }} г{% if dish.calories %} · {{ dish.calories }} kcal{% endif %}</span>
+        {% allergen_badges dish %}
+    </div>
+</li>

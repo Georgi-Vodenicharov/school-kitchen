@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load kitchen_tags %}
+
+{% block title %}Начало{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <p class="eyebrow">Добър апетит!</p>
+        <h1>Топъл обяд за всеки ученик, поръчан с няколко клика.</h1>
+        <p class="lead">Разгледай менюто за деня, поръчай за себе си или за целия клас и вземи храната си навреме, без опашка.</p>
+        <div class="hero-actions">
+            <a class="btn btn-accent" href="{% url 'orders:create' %}">Поръчай сега</a>
+            <a class="btn btn-ghost" href="{% url 'daily_menus:list' %}">Виж менютата</a>
+        </div>
+    </div>
+
+    <aside class="today-card">
+        <p class="eyebrow">Меню за днес · {% now "d.m.Y" %}</p>
+        {% if today_menu %}
+            <h2>{{ today_menu.title|default:"Обедно меню" }}</h2>
+            <ul class="menu-list compact">
+                {% for dish in today_menu.dishes.all|slice:":5" %}
+                    {% include 'partials/_menu_dish_row.html' %}
+                {% endfor %}
+            </ul>
+            <a class="btn btn-primary btn-sm" href="{% url 'daily_menus:detail' today_menu.pk %}">Цялото меню &rarr;</a>
+        {% else %}
+            <p class="muted">За днес все още няма публикувано меню.</p>
+            <a class="btn btn-primary btn-sm" href="{% url 'daily_menus:create' %}">Създай меню</a>
+        {% endif %}
+    </aside>
+</section>
+
+<section class="stats-grid">
+    <a class="stat-card" href="{% url 'menu:dish-list' %}">
+        <span class="stat-value">{{ dishes_count }}</span>
+        <span class="stat-label">ястия в каталога</span>
+    </a>
+    <a class="stat-card" href="{% url 'orders:list' %}">
+        <span class="stat-value">{{ orders_today_count }}</span>
+        <span class="stat-label">поръчки за днес</span>
+    </a>
+    <a class="stat-card" href="{% url 'orders:kitchen' %}">
+        <span class="stat-value">{{ active_orders_count }}</span>
+        <span class="stat-label">активни поръчки в кухнята</span>
+    </a>
+</section>
+
+<div class="two-col">
+    <section>
+        <div class="section-head">
+            <h2>Най-поръчвани</h2>
+            <a href="{% url 'menu:dish-list' %}">Всички ястия &rarr;</a>
+        </div>
+        {% if popular_dishes %}
+            <ol class="ranked-list">
+                {% for dish in popular_dishes %}
+                    <li>
+                        <span class="rank">{{ forloop.counter }}</span>
+                        <a href="{% url 'menu:dish-detail' dish.pk %}">{{ dish.name }}</a>
+                        <span class="muted small">{{ dish.total_ordered }} порц.</span>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <p class="muted">Все още няма поръчки, от които да направим класация.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <div class="section-head">
+            <h2>Предстоящи менюта</h2>
+            <a href="{% url 'daily_menus:list' %}">Всички &rarr;</a>
+        </div>
+        {% if upcoming_menus %}
+            <ul class="day-list">
+                {% for menu in upcoming_menus %}
+                    <li>
+                        <a href="{% url 'daily_menus:detail' menu.pk %}">
+                            <span class="day-date">{{ menu.date|date:"d" }}<small>{{ menu.date|date:"M" }}</small></span>
+                            <span>
+                                <strong>{{ menu.date|date:"l"|capfirst }}</strong>
+                                <span class="muted small">{{ menu.title|default:"Обедно меню" }} · {{ menu.dishes.count }} ястия</span>
+                            </span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% url 'daily_menus:create' as add_menu_url %}
+            {% include 'partials/_empty_state.html' with message="Няма предстоящи менюта." action_url=add_menu_url action_label="Създай меню" %}
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

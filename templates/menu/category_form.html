@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Редакция на категория{% else %}Нова категория{% endif %}{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>{% if object %}Категория „{{ object.name }}“{% else %}Нова категория{% endif %}</h1>
+    <p class="muted">Например: Супи, Основни ястия, Салати, Десерти, Напитки.</p>
+    {% url 'menu:category-list' as cancel_url %}
+    {% include 'partials/_form.html' with submit_label=object|yesno:"Запази,Създай категория" %}
+</div>
+{% endblock %}

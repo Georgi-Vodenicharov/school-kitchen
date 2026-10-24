@@ -1,0 +1,17 @@
+{% if page_obj and page_obj.has_other_pages %}
+    <nav class="pagination" aria-label="Страници">
+        {% if page_obj.has_previous %}
+            <a class="btn btn-ghost btn-sm" href="{% querystring page=page_obj.previous_page_number %}">&larr; Назад</a>
+        {% else %}
+            <span class="btn btn-ghost btn-sm is-disabled">&larr; Назад</span>
+        {% endif %}
+
+        <span class="muted">Страница {{ page_obj.number }} от {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-ghost btn-sm" href="{% querystring page=page_obj.next_page_number %}">Напред &rarr;</a>
+        {% else %}
+            <span class="btn btn-ghost btn-sm is-disabled">Напред &rarr;</span>
+        {% endif %}
+    </nav>
+{% endif %}

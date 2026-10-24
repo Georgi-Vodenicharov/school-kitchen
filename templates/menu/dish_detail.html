@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load kitchen_tags %}
+
+{% block title %}{{ dish.name }}{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{% url 'menu:dish-list' %}">&larr; Към всички ястия</a>
+
+<article class="detail">
+    <div class="detail-photo">
+        {% if dish.image_url %}
+            <img src="{{ dish.image_url }}" alt="{{ dish.name }}">
+        {% else %}
+            <span class="photo-placeholder big">{{ dish.name|first|upper }}</span>
+        {% endif %}
+    </div>
+
+    <div class="detail-body">
+        <p class="eyebrow"><a href="{% url 'menu:dish-list' %}?category={{ dish.category.pk }}">{{ dish.category.name }}</a></p>
+        <h1>{{ dish.name }}</h1>
+
+        <div class="tags">
+            {% if dish.is_vegetarian %}<span class="tag tag-green">&#127807; Вегетарианско</span>{% endif %}
+            {% if dish.is_available %}
+                <span class="tag">Предлага се</span>
+            {% else %}
+                <span class="tag tag-red">Временно не се предлага</span>
+            {% endif %}
+        </div>
+
+        <p class="price big">{{ dish.price|euro }}</p>
+
+        <dl class="facts">
+            <div><dt>Грамаж</dt><dd>{{ dish.weight_grams }} г</dd></div>
+            <div><dt>Калории</dt><dd>{{ dish.calories|default:"—" }}{% if dish.calories %} kcal{% endif %}</dd></div>
+            <div><dt>Поръчано</dt><dd>{{ dish.order_items.count }} пъти</dd></div>
+            <div><dt>В менюта</dt><dd>{{ dish.daily_menus.count }}</dd></div>
+        </dl>
+
+        {% if dish.description %}
+            <div class="prose">{{ dish.description|linebreaks }}</div>
+        {% endif %}
+
+        <h2 class="h3">Алергени</h2>
+        <ul class="allergen-list">
+            {% for allergen in dish.allergens.all %}
+                <li><span class="allergen">{{ allergen.number }}</span> {{ allergen.name }}</li>
+            {% empty %}
+                <li class="muted">Няма обявени алергени.</li>
+            {% endfor %}
+        </ul>
+
+        <div class="detail-actions">
+            <a class="btn btn-ghost" href="{% url 'menu:dish-edit' dish.pk %}">Редактирай</a>
+            <a class="btn btn-danger-ghost" href="{% url 'menu:dish-delete' dish.pk %}">Изтрий</a>
+        </div>
+    </div>
+</article>
+{% endblock %}

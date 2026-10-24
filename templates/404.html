@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Страницата не е намерена{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <p class="error-code">4<span class="error-plate" aria-hidden="true">&#127869;</span>4</p>
+    <h1>Тази чиния е празна.</h1>
+    <p class="lead">Страницата, която търсиш, не съществува, преместена е или обектът е изтрит.</p>
+    <div class="hero-actions center">
+        <a class="btn btn-primary" href="{% url 'common:home' %}">Към началото</a>
+        <a class="btn btn-ghost" href="{% url 'daily_menus:list' %}">Дневно меню</a>
+    </div>
+</section>
+{% endblock %}

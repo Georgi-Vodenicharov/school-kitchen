@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Дневни менюта{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Дневни менюта</h1>
+        <p class="muted">Менюто на кухнята за всеки учебен ден.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'daily_menus:create' %}">+ Ново дневно меню</a>
+</div>
+
+<nav class="tabs" aria-label="Период">
+    <a class="tab{% if request.GET.when == 'upcoming' or not request.GET.when %} active{% endif %}" href="?when=upcoming">Предстоящи</a>
+    <a class="tab{% if request.GET.when == 'past' %} active{% endif %}" href="?when=past">Минали</a>
+    <a class="tab{% if request.GET.when == 'all' %} active{% endif %}" href="?when=all">Всички</a>
+</nav>
+
+{% if menus %}
+    <div class="card-grid">
+        {% for menu in menus %}
+            <a class="card card-pad menu-day-card{% if menu.is_today %} is-today{% endif %}" href="{% url 'daily_menus:detail' menu.pk %}">
+                <div class="menu-day-head">
+                    <span class="day-date">{{ menu.date|date:"d" }}<small>{{ menu.date|date:"M" }}</small></span>
+                    <span>
+                        <strong>{{ menu.date|date:"l"|capfirst }}</strong>
+                        {% if menu.is_today %}<span class="tag tag-accent">днес</span>{% endif %}
+                        <span class="muted small">{{ menu.title|default:"Обедно меню" }}</span>
+                    </span>
+                </div>
+                <ul class="dot-list">
+                    {% for dish in menu.dishes.all|slice:":4" %}
+                        <li>{{ dish.name }}</li>
+                    {% endfor %}
+                    {% if menu.dishes.count > 4 %}<li class="muted">и още {{ menu.dishes.count|add:"-4" }}…</li>{% endif %}
+                </ul>
+                <p class="small muted">{{ menu.orders.count }} поръчки</p>
+            </a>
+        {% endfor %}
+    </div>
+    {% include 'partials/_pagination.html' %}
+{% else %}
+    {% url 'daily_menus:create' as add_menu_url %}
+    {% include 'partials/_empty_state.html' with message="Няма менюта за избрания период." action_url=add_menu_url action_label="Създай меню" %}
+{% endif %}
+{% endblock %}

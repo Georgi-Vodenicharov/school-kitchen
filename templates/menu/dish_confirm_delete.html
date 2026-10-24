@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Изтриване: {{ object.name }}{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    {% url 'menu:dish-detail' object.pk as cancel_url %}
+    {% with object_label="„"|add:object.name|add:"“" %}
+        {% include 'partials/_delete_box.html' %}
+    {% endwith %}
+    {% if object.order_items.exists %}
+        <p class="alert alert-warning">Ястието присъства в {{ object.order_items.count }} поръчки и не може да бъде изтрито. Вместо това го маркирай като „не се предлага“.</p>
+    {% endif %}
+</div>
+{% endblock %}

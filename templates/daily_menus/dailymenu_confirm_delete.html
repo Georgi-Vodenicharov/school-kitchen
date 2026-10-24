@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Изтриване на меню{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    {% url 'daily_menus:detail' object.pk as cancel_url %}
+    {% with menu_date=object.date|date:"d.m.Y" %}
+        {% with object_label="менюто за "|add:menu_date %}
+            {% include 'partials/_delete_box.html' %}
+        {% endwith %}
+    {% endwith %}
+    {% if object.orders.exists %}
+        <p class="alert alert-warning">По това меню има {{ object.orders.count }} поръчки. Меню с поръчки не може да бъде изтрито.</p>
+    {% endif %}
+</div>
+{% endblock %}

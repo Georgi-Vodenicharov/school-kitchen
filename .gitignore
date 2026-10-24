@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Django
+db.sqlite3
+*.log
+/staticfiles/
+.env
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Personal notes (do not commit)
+GUIDE.md
