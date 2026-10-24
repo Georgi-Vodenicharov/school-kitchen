@@ -2,10 +2,9 @@ from decimal import Decimal
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-
+from django.urls import reverse
 from common.models import TimeStampedModel
 
-from django.urls import reverse
 
 
 class Category(models.Model):
@@ -83,8 +82,5 @@ class Dish(TimeStampedModel):
     def __str__(self):
         return self.name
 
-        def __str__(self):
-            return self.name
-
-            def get_absolute_url(self):
-                return reverse('URL', kwargs={'pk': self.pk})
+    def get_absolute_url(self):
+        return reverse('menu:dish-detail', kwargs={'pk': self.pk})
