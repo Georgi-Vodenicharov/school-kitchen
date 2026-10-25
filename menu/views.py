@@ -59,14 +59,14 @@ class DishCreateView(SuccessMessageMixin, CreateView):
 
 class DishUpdateView(SuccessMessageMixin, UpdateView):
     model = Dish
-    form_class = DishDeleteForm
+    form_class = DishForm
     template_name = 'menu/dish_form.html'
     success_message = 'Промените по „%(name)s“ са запазени.'
 
 
 class DishDeleteView(InstanceDeleteFormMixin, ProtectedDeleteMixin, SuccessMessageMixin, DeleteView):
     model = Dish
-    form_class = DishForm
+    form_class = DishDeleteForm
     template_name = 'menu/dish_confirm_delete.html'
     success_url = reverse_lazy('menu:dish-list')
     success_message = 'Ястието „%(name)s“ беше изтрито.'
@@ -105,5 +105,5 @@ class AllergenCreateView(SuccessMessageMixin, CreateView):
     model = Allergen
     form_class = AllergenForm
     template_name = 'menu/allergen_form.html'
-    success_url = reverse_lazy('menu:allergen-list	')
+    success_url = reverse_lazy('menu:allergen-list')
     success_message = 'Алергенът „%(name)s“ беше добавен.'
