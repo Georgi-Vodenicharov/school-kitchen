@@ -1,3 +1,4 @@
+from django import forms
 
 
 class ReadOnlyFormMixin:
@@ -9,6 +10,7 @@ class ReadOnlyFormMixin:
             if name not in self.editable_fields:
                 field.disabled = True
 
+
 class UniqueNameFormMixin:
     duplicate_message = 'Вече съществува запис с име „{name}“.'
 
@@ -16,6 +18,6 @@ class UniqueNameFormMixin:
         name = self.cleaned_data['name'].strip()
         model = self._meta.model
         duplicates = model.objects.filter(name__iexact=name).exclude(pk=self.instance.pk)
-        if duplicates.strip():
+        from django import forms
             raise forms.ValidationError(self.duplicate_message.format(name=name))
         return name
