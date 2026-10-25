@@ -154,6 +154,8 @@ class OrderItemDeleteView(OrderEditableRequiredMixin, SuccessMessageMixin, Delet
     def get_success_url(self):
         return reverse('orders:detail', kwargs={'pk': self.order.pk})
 
+
+
 class OrderPaymentView(OrderEditableRequiredMixin, FormView):
     form_class = PaymentForm
     template_name = 'orders/order_payment.html'
@@ -187,6 +189,8 @@ class OrderReceiptView(DetailView):
             messages.warning(request, 'Разписка има само за платени поръчки.')
             return redirect(self.object.get_absolute_url())
         return self.render_to_response(self.get_context_data(object=self.object))
+
+
 
 class KitchenBoardView(TemplateView):
     template_name = 'orders/kitchen_board.html'

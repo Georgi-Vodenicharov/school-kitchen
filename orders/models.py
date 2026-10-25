@@ -78,16 +78,9 @@ class Order(TimeStampedModel):
         return sum(item.quantity for item in self.items.all())
 
     @property
-    def can_be_edited(self):
-        return self.status == self.Status.NEW
-
-    @property
     def is_paid(self):
         return self.paid_at is not None
 
-    @property
-    def can_be_edited(self):
-        return self.status == self.Status.NEW and not self.is_paid
 
     @property
     def next_status_label(self):
@@ -97,6 +90,8 @@ class Order(TimeStampedModel):
         return self.Status(next_status).label
 
     def advance_status(self):
+        if not self.is_paid:
+            raise ValueError('Поръчката още не е платена.')
         next_status = self.NEXT_STATUS.get(self.status)
         if next_status is None:
             raise ValueError('Поръчката няма следващ етап.')

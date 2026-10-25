@@ -104,6 +104,8 @@ class OrderItemForm(forms.ModelForm):
             raise forms.ValidationError('Това ястие вече е в поръчката. Премахни го и го добави с новото количество.')
         return dish
 
+
+
     class PaymentForm(forms.Form):
         payment_method = forms.ChoiceField(
             choices=Order.PaymentMethod.choices,
