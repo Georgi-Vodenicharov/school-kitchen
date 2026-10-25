@@ -105,11 +105,10 @@ class OrderItemForm(forms.ModelForm):
         return dish
 
 
-
-    class PaymentForm(forms.Form):
-        payment_method = forms.ChoiceField(
-            choices=Order.PaymentMethod.choices,
-            widget=forms.RadioSelect,
-            label='Начин на плащане',
-            error_messages={'required': 'Избери начин на плащане.'},
-        )
+class PaymentForm(forms.Form):
+    payment_method = forms.ChoiceField(
+        choices=Order.PaymentMethod.choices,
+        widget=forms.RadioSelect,
+        label='Начин на плащане',
+        error_messages={'required': 'Избери начин на плащане.'},
+    )

@@ -81,6 +81,9 @@ class Order(TimeStampedModel):
     def is_paid(self):
         return self.paid_at is not None
 
+    @property
+    def can_be_edited(self):
+        return self.status == self.Status.NEW and not self.is_paid
 
     @property
     def next_status_label(self):
