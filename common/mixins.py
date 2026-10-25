@@ -28,5 +28,5 @@ class ProtectedDeleteMixin:
         try:
             return super().form_valid(form)
         except ProtectedError:
-            messages.error(self.request, self.protected_message	)
+            messages.error(self.request, self.protected_message)
             return redirect(self.object.get_absolute_url())
