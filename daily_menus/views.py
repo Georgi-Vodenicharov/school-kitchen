@@ -12,6 +12,7 @@ class DailyMenuListView(ListView):
     model = DailyMenu
     template_name = 'daily_menus/dailymenu_list.html'
     context_object_name = 'menus'
+    paginate_by = 9
 
     def get_queryset(self):
         today = timezone.localdate()
