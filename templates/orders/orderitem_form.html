@@ -8,7 +8,7 @@
     <ol class="steps">
         <li class="done">Данни за поръчката</li>
         <li class="active">Избор на ястия</li>
-        <li>Готово</li>
+        <li>Плащане</li>
     </ol>
     <h1>Добави ястие към поръчка № {{ order.pk|stringformat:"04d" }}</h1>
     <p class="muted">Меню за {{ order.daily_menu.date|date:"l, d.m.Y" }} · {{ order.customer_name }}, {{ order.class_group }}</p>
@@ -28,6 +28,9 @@
     {% url 'orders:detail' order.pk as cancel_url %}
     {% include 'partials/_form.html' with submit_label="Добави към поръчката" %}
 
-    <p class="hint"><a href="{% url 'orders:detail' order.pk %}">Готово, към поръчката &rarr;</a></p>
+    {% if order.items.exists %}
+        <a class="btn btn-accent btn-xl" href="{% url 'orders:pay' order.pk %}">Към плащане · {{ order.total|euro }} &rarr;</a>
+    {% endif %}
+    <p class="hint"><a href="{% url 'orders:detail' order.pk %}">Виж поръчката</a></p>
 </div>
 {% endblock %}

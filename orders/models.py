@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from common.models import TimeStampedModel
 from daily_menus.models import DailyMenu
@@ -12,10 +13,14 @@ from menu.models import Dish
 class Order(TimeStampedModel):
     class Status(models.TextChoices):
         NEW = 'new', 'Нова'
-        PREPARING = 'preparing', 'Приготвя се'
+        PREPARING = 'preparing', 'Приета'
         READY = 'ready', 'Готова'
         SERVED = 'served', 'Получена'
         CANCELLED = 'cancelled', 'Отказана'
+
+    class PaymentMethod(models.TextChoices):
+        CASH = 'cash', 'В брой'
+        CARD = 'card', 'С карта'
 
     NEXT_STATUS = {
         'new': 'preparing',
@@ -47,6 +52,12 @@ class Order(TimeStampedModel):
         choices=Status.choices,
         default=Status.NEW,
     )
+    payment_method = models.CharField(
+        max_length=10,
+        choices=PaymentMethod.choices,
+        blank=True,
+    )
+    paid_at = models.DateTimeField(null=True, blank=True)
     note = models.CharField(max_length=200, blank=True)
 
     class Meta:
@@ -71,6 +82,14 @@ class Order(TimeStampedModel):
         return self.status == self.Status.NEW
 
     @property
+    def is_paid(self):
+        return self.paid_at is not None
+
+    @property
+    def can_be_edited(self):
+        return self.status == self.Status.NEW and not self.is_paid
+
+    @property
     def next_status_label(self):
         next_status = self.NEXT_STATUS.get(self.status)
         if next_status is None:
@@ -83,6 +102,15 @@ class Order(TimeStampedModel):
             raise ValueError('Поръчката няма следващ етап.')
         self.status = next_status
         self.save(update_fields=['status', 'updated_at'])
+
+    def mark_paid(self, method):
+        if self.is_paid:
+            raise ValueError('Поръчката вече е платена.')
+        if not self.items.exists():
+            raise ValueError('Не може да се плати празна поръчка.')
+        self.payment_method = method
+        self.paid_at = timezone.now()
+        self.save(update_fields=['payment_method', 'paid_at', 'updated_at'])
 
 
 class OrderItem(models.Model):

@@ -5,6 +5,7 @@
         {% include 'partials/_status_badge.html' %}
     </header>
     <p class="order-customer"><strong>{{ order.customer_name }}</strong> · {{ order.class_group }}</p>
+    {% if order.is_paid %}<p class="small"><span class="tag tag-green">&#10003; {{ order.get_payment_method_display }}</span></p>{% endif %}
     <p class="muted small">За {{ order.daily_menu.date|date:"l, d.m" }} · създадена {{ order.created_at|time:"H:i" }}</p>
     <ul class="order-lines">
         {% for item in order.items.all %}
@@ -19,7 +20,7 @@
         {% if show_actions and order.next_status_label %}
             <form method="post" action="{% url 'orders:advance' order.pk %}">
                 {% csrf_token %}
-<input type="hidden" name="next" value="{{ request.path }}">
+                <input type="hidden" name="next" value="{{ request.path }}">
                 <button type="submit" class="btn btn-primary btn-sm">&rarr; {{ order.next_status_label }}</button>
             </form>
         {% endif %}

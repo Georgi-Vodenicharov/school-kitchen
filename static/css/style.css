@@ -707,3 +707,103 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--navy); width: 
 }
 .error-plate { display: inline-block; font-size: .8em; }
 .error-page .lead { margin: 0 auto 24px; }
+
+/* ==========================================================
+   Плащане, разписка, touch дисплей и печат
+   ========================================================== */
+
+button, .btn, a, label, input, select, textarea { touch-action: manipulation; }
+
+.btn-xl { display: flex; width: 100%; padding: 18px 24px; font-size: 1.2rem; margin-top: 8px; }
+.form-actions.center { justify-content: center; margin-top: 14px; }
+.field-title { font-weight: 700; margin-bottom: 10px; }
+.receipt-badges { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+
+/* Payment */
+.pay-summary { margin-top: 16px; }
+.pay-line { display: flex; justify-content: space-between; gap: 12px; }
+.pay-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 12px 0 0;
+    padding-top: 12px;
+    border-top: 2px dashed var(--line);
+    font-weight: 700;
+}
+.pay-total .price { font-size: 1.8rem; font-family: var(--font-display); }
+
+.pay-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.pay-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 130px;
+    padding: 20px 16px;
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+    font-weight: 700;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.pay-option input { position: absolute; opacity: 0; pointer-events: none; }
+.pay-option:has(input:checked) { border-color: var(--navy); background: var(--navy-soft); box-shadow: 0 0 0 4px rgba(29, 58, 79, .15); }
+.pay-option:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.pay-icon { font-size: 2.6rem; line-height: 1; }
+
+/* Receipt (paper slip) */
+.receipt-page { max-width: 520px; margin: 0 auto; }
+.receipt-page .steps { justify-content: center; }
+.receipt-paper {
+    max-width: 380px;
+    margin: 0 auto;
+    padding: 26px 24px 30px;
+    background: #fff;
+    color: #111;
+    font-family: "Courier New", Courier, monospace;
+    font-size: .92rem;
+    line-height: 1.5;
+    box-shadow: var(--shadow-hover);
+    border-radius: 4px;
+}
+.receipt-paper p { margin: 0; }
+.rp-center { text-align: center; }
+.rp-logo { width: 72px; height: auto; margin: 0 auto 8px; }
+.rp-title { font-weight: 700; font-size: 1.1rem; letter-spacing: .08em; }
+.rp-line { border-top: 1px dashed #888; margin: 12px 0; }
+.rp-row { display: flex; justify-content: space-between; gap: 10px; }
+.rp-row.muted { color: #555; }
+.rp-item { margin-bottom: 6px; }
+.rp-item-name { display: block; font-weight: 700; }
+.rp-total { font-size: 1.25rem; font-weight: 700; }
+.rp-thanks { margin-top: 8px !important; font-weight: 700; }
+.rp-legal { margin-top: 10px !important; font-size: .78rem; color: #555; }
+.receipt-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
+/* Touch screens: larger tap targets */
+@media (pointer: coarse) {
+    .btn { min-height: 48px; padding: 12px 22px; font-size: 1rem; }
+    .btn-sm { min-height: 44px; padding: 10px 16px; font-size: .95rem; }
+    .btn-xl { min-height: 64px; font-size: 1.25rem; }
+    input[type="text"], input[type="email"], input[type="url"], input[type="number"],
+    input[type="date"], input[type="search"], select, textarea { min-height: 50px; font-size: 1.05rem; }
+    input[type="checkbox"], input[type="radio"] { width: 22px; height: 22px; }
+    .nav-links a:not(.btn) { padding: 12px 14px; }
+    .field--checkboxselectmultiple > div label, .field--radioselect > div label { min-height: 52px; font-size: 1rem; }
+    .board-cards .order-card-foot { flex-wrap: wrap; }
+    .board-cards .order-card-foot form, .board-cards .order-card-foot .btn { width: 100%; }
+    .link-danger { display: inline-grid; place-items: center; min-width: 44px; min-height: 44px; }
+}
+
+/* Print only the receipt */
+@media print {
+    .site-header, .site-footer, .messages, .no-print, .back-link { display: none !important; }
+    body { background: #fff; }
+    .page { padding: 0; }
+    .receipt-paper { max-width: 80mm; padding: 0; box-shadow: none; }
+}

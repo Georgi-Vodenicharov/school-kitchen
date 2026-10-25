@@ -13,7 +13,10 @@
                 <p class="eyebrow">Поръчка</p>
                 <h1>№ {{ order.pk|stringformat:"04d" }}</h1>
             </div>
-            {% include 'partials/_status_badge.html' %}
+            <div class="receipt-badges">
+                {% include 'partials/_status_badge.html' %}
+                {% if order.is_paid %}<span class="badge badge-ready">&#10003; Платена · {{ order.get_payment_method_display }}</span>{% else %}<span class="badge badge-muted">Неплатена</span>{% endif %}
+            </div>
         </header>
 
         <dl class="facts">
@@ -71,16 +74,21 @@
         <div class="card card-pad">
             <h2 class="h3">Действия</h2>
             <div class="stack">
+                {% if order.is_paid %}
+                    <a class="btn btn-accent" href="{% url 'orders:receipt' order.pk %}">&#129534; Разписка</a>
+                {% elif items %}
+                    <a class="btn btn-accent" href="{% url 'orders:pay' order.pk %}">&#128179; Плати {{ order.total|euro }}</a>
+                {% endif %}
                 {% if order.can_be_edited %}
-                    <a class="btn btn-accent" href="{% url 'orders:item-add' order.pk %}">+ Добави ястие</a>
+                    <a class="btn btn-ghost" href="{% url 'orders:item-add' order.pk %}">+ Добави ястие</a>
                     <a class="btn btn-ghost" href="{% url 'orders:edit' order.pk %}">Редактирай данните</a>
                 {% else %}
-                    <p class="muted small">Поръчката вече се обработва от кухнята и не може да се променя.</p>
+                    <p class="muted small">Поръчката е платена и не може да се променя.</p>
                 {% endif %}
-                {% if order.next_status_label %}
+                {% if order.is_paid and order.next_status_label %}
                     <form method="post" action="{% url 'orders:advance' order.pk %}">
                         {% csrf_token %}
-<input type="hidden" name="next" value="{{ request.path }}">
+                        <input type="hidden" name="next" value="{{ request.path }}">
                         <button type="submit" class="btn btn-primary full">&rarr; {{ order.next_status_label }}</button>
                     </form>
                 {% endif %}

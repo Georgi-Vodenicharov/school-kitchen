@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static kitchen_tags %}
+
+{% block title %}Разписка № {{ order.pk|stringformat:"04d" }}{% endblock %}
+
+{% block content %}
+<div class="receipt-page">
+    <ol class="steps no-print">
+        <li class="done">Данни за поръчката</li>
+        <li class="done">Избор на ястия</li>
+        <li class="done">Плащане</li>
+    </ol>
+
+    <article class="receipt-paper" aria-label="Разписка">
+        <header class="rp-center">
+            <img class="rp-logo" src="{% static 'img/school-logo.jpg' %}" alt="Лого на ПГ по МСС „Пейо К. Яворов“" width="72" height="73">
+            <p class="rp-title">УЧИЛИЩНА КУХНЯ</p>
+            <p>ПГ по МСС „Пейо К. Яворов“</p>
+            <p>гр. Гоце Делчев</p>
+        </header>
+
+        <div class="rp-line"></div>
+
+        <div class="rp-row"><span>Поръчка №</span><span>{{ order.pk|stringformat:"04d" }}</span></div>
+        <div class="rp-row"><span>Платена на</span><span>{{ order.paid_at|date:"d.m.Y H:i" }}</span></div>
+        <div class="rp-row"><span>Ученик</span><span>{{ order.customer_name }}</span></div>
+        <div class="rp-row"><span>Клас</span><span>{{ order.class_group }}</span></div>
+        <div class="rp-row"><span>Обяд за</span><span>{{ order.daily_menu.date|date:"d.m.Y" }}</span></div>
+
+        <div class="rp-line"></div>
+
+        {% for item in order.items.all %}
+            <div class="rp-item">
+                <span class="rp-item-name">{{ item.dish.name }}</span>
+                <div class="rp-row muted"><span>{{ item.quantity }} &times; {{ item.unit_price|euro }}</span><span>{{ item.line_total|euro }}</span></div>
+            </div>
+        {% endfor %}
+
+        <div class="rp-line"></div>
+
+        <div class="rp-row rp-total"><span>ОБЩО</span><span>{{ order.total|euro }}</span></div>
+        <div class="rp-row"><span>Плащане</span><span>{{ order.get_payment_method_display }}</span></div>
+
+        <div class="rp-line"></div>
+
+        {% if order.note %}<p class="rp-center">Бележка: {{ order.note }}</p>{% endif %}
+        <p class="rp-center rp-thanks">Благодарим ви! Добър апетит!</p>
+        <p class="rp-center rp-legal">Това не е фискален бон.<br>Служебна бележка за поръчка.</p>
+    </article>
+
+    <div class="receipt-actions no-print">
+        <button type="button" class="btn btn-primary" onclick="window.print()">&#128424; Принтирай</button>
+        <a class="btn btn-accent" href="{% url 'orders:create' %}">+ Нова поръчка</a>
+        <a class="btn btn-ghost" href="{% url 'orders:detail' order.pk %}">Към поръчката</a>
+    </div>
+</div>
+{% endblock %}

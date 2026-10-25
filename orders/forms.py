@@ -103,3 +103,11 @@ class OrderItemForm(forms.ModelForm):
         if self.order is not None and self.order.items.filter(dish=dish).exists():
             raise forms.ValidationError('Това ястие вече е в поръчката. Премахни го и го добави с новото количество.')
         return dish
+
+    class PaymentForm(forms.Form):
+        payment_method = forms.ChoiceField(
+            choices=Order.PaymentMethod.choices,
+            widget=forms.RadioSelect,
+            label='Начин на плащане',
+            error_messages={'required': 'Избери начин на плащане.'},
+        )

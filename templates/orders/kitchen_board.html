@@ -2,11 +2,14 @@
 
 {% block title %}Табло на кухнята{% endblock %}
 
+{% block extra_head %}<meta http-equiv="refresh" content="15">{% endblock %}
+
 {% block content %}
 <div class="page-head">
     <div>
         <h1>&#128104;&#8205;&#127859; Табло на кухнята</h1>
-        <p class="muted">Активните поръчки по статус. Натисни бутона на картата, за да я преместиш към следващия етап.</p>
+        <p class="muted">Платените поръчки по статус. Натисни бутона на картата, за да я преместиш към следващия етап.</p>
+        <p class="small muted">&#8635; Страницата се обновява автоматично на всеки 15 секунди.</p>
     </div>
     <a class="btn btn-ghost" href="{% url 'orders:list' %}?status=served">Получени поръчки</a>
 </div>

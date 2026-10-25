@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load kitchen_tags %}
+
+{% block title %}Плащане на поръчка{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <ol class="steps">
+        <li class="done">Данни за поръчката</li>
+        <li class="done">Избор на ястия</li>
+        <li class="active">Плащане</li>
+    </ol>
+
+    <h1>Плащане на поръчка № {{ order.pk|stringformat:"04d" }}</h1>
+    <p class="muted">{{ order.customer_name }}, {{ order.class_group }} · меню за {{ order.daily_menu.date|date:"l, d.m.Y" }}</p>
+
+    <div class="card card-pad pay-summary">
+        <ul class="order-lines">
+            {% for item in order.items.all %}
+                <li class="pay-line">
+                    <span><span class="qty">{{ item.quantity }}&times;</span> {{ item.dish.name }}</span>
+                    <span>{{ item.line_total|euro }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="pay-total"><span>За плащане</span> <strong class="price">{{ order.total|euro }}</strong></p>
+    </div>
+
+    <form method="post" class="form-card" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
+        {% endif %}
+
+        <p class="field-title">{{ form.payment_method.label }}<span class="req">*</span></p>
+        <div class="pay-options">
+            {% for choice in form.payment_method %}
+                <label class="pay-option">
+                    {{ choice.tag }}
+                    <span class="pay-icon" aria-hidden="true">{% if choice.data.value == 'cash' %}&#128182;{% else %}&#128179;{% endif %}</span>
+                    <span>{{ choice.choice_label }}</span>
+                </label>
+            {% endfor %}
+        </div>
+        {% for error in form.payment_method.errors %}<small class="error">{{ error }}</small>{% endfor %}
+
+        <button type="submit" class="btn btn-accent btn-xl">Плати {{ order.total|euro }}</button>
+        <div class="form-actions center">
+            <a class="btn btn-ghost" href="{% url 'orders:item-add' order.pk %}">&larr; Обратно към ястията</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

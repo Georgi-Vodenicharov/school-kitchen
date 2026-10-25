@@ -53,6 +53,7 @@
                     <th>За дата</th>
                     <th class="num">Ястия</th>
                     <th class="num">Сума</th>
+                    <th>Плащане</th>
                     <th>Статус</th>
                 </tr>
             </thead>
@@ -65,6 +66,7 @@
                         <td>{{ order.daily_menu.date|date:"d.m.Y" }}</td>
                         <td class="num">{{ order.items_count }}</td>
                         <td class="num">{{ order.total|euro }}</td>
+                        <td>{% if order.is_paid %}<span class="tag tag-green">&#10003; {{ order.get_payment_method_display }}</span>{% else %}<span class="tag tag-muted">неплатена</span>{% endif %}</td>
                         <td>{% include 'partials/_status_badge.html' %}</td>
                     </tr>
                 {% endfor %}

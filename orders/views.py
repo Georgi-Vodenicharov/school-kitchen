@@ -5,10 +5,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views import View
-from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
+from django.views.generic import CreateView, DeleteView, DetailView, FormView, ListView, TemplateView, UpdateView
 
 from common.mixins import SortableListMixin
-from orders.forms import OrderCreateForm, OrderEditForm, OrderItemForm, OrderStatusForm
+from orders.forms import OrderCreateForm, OrderEditForm, OrderItemForm, OrderStatusForm, PaymentForm
 from orders.mixins import OrderEditableRequiredMixin
 from orders.models import Order, OrderItem
 
@@ -154,6 +154,39 @@ class OrderItemDeleteView(OrderEditableRequiredMixin, SuccessMessageMixin, Delet
     def get_success_url(self):
         return reverse('orders:detail', kwargs={'pk': self.order.pk})
 
+class OrderPaymentView(OrderEditableRequiredMixin, FormView):
+    form_class = PaymentForm
+    template_name = 'orders/order_payment.html'
+
+    def get_order(self):
+        return get_object_or_404(Order, pk=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order'] = self.order
+        return context
+
+    def form_valid(self, form):
+        try:
+            self.order.mark_paid(form.cleaned_data['payment_method'])
+        except ValueError as error:
+            messages.error(self.request, str(error))
+            return redirect(self.order.get_absolute_url())
+        messages.success(self.request, f'Поръчка № {self.order.pk} е платена. Приятен апетит!')
+        return redirect('orders:receipt', pk=self.order.pk)
+
+
+class OrderReceiptView(DetailView):
+    model = Order
+    template_name = 'orders/order_receipt.html'
+    context_object_name = 'order'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.is_paid:
+            messages.warning(request, 'Разписка има само за платени поръчки.')
+            return redirect(self.object.get_absolute_url())
+        return self.render_to_response(self.get_context_data(object=self.object))
 
 class KitchenBoardView(TemplateView):
     template_name = 'orders/kitchen_board.html'
@@ -163,6 +196,7 @@ class KitchenBoardView(TemplateView):
         context = super().get_context_data(**kwargs)
         orders = (
             Order.objects
+            .filter(paid_at__isnull=False)
             .select_related('daily_menu')
             .prefetch_related('items__dish')
             .order_by('daily_menu__date', 'created_at')
