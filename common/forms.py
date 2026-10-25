@@ -18,6 +18,6 @@ class UniqueNameFormMixin:
         name = self.cleaned_data['name'].strip()
         model = self._meta.model
         duplicates = model.objects.filter(name__iexact=name).exclude(pk=self.instance.pk)
-        from django import forms
+        if duplicates.exists():
             raise forms.ValidationError(self.duplicate_message.format(name=name))
         return name
