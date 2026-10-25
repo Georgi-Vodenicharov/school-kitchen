@@ -1,5 +1,5 @@
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
+from django.db.models import Max, Q
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
@@ -55,6 +55,12 @@ class DishCreateView(SuccessMessageMixin, CreateView):
     form_class = DishForm
     template_name = 'menu/dish_form.html'
     success_message = 'Ястието „%(name)s“ беше добавено.'
+    def get_initial(self):
+        initial = super().get_initial()
+        category = self.request.GET.get('category', '')
+        if category.isdigit():
+            initial['category'] = category
+        return initial
 
 
 class DishUpdateView(SuccessMessageMixin, UpdateView):
@@ -85,6 +91,11 @@ class CategoryCreateView(SuccessMessageMixin, CreateView):
     template_name = 'menu/category_form.html'
     success_url = reverse_lazy('menu:category-list')
     success_message = 'Категорията „%(name)s“ беше създадена.'
+    def get_initial(self):
+        initial = super().get_initial()
+        last_position = Category.objects.aggregate(Max('position'))['position__max']
+        initial['position'] = (last_position or 0) + 1
+        return initial
 
 
 class CategoryUpdateView(SuccessMessageMixin, UpdateView):

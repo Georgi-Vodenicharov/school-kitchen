@@ -23,7 +23,10 @@
                         <td class="num">{{ category.position }}</td>
                         <td><a href="{% url 'menu:dish-list' %}?category={{ category.pk }}">{{ category.name }}</a></td>
                         <td class="num">{{ category.dishes.count }}</td>
-                        <td class="num"><a class="btn btn-ghost btn-sm" href="{% url 'menu:category-edit' category.pk %}">Редактирай</a></td>
+                        <td class="num">
+                            <a class="btn btn-ghost btn-sm" href="{% url 'menu:dish-create' %}?category={{ category.pk }}">+ Ястие</a>
+                            <a class="btn btn-ghost btn-sm" href="{% url 'menu:category-edit' category.pk %}">Редактирай</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
