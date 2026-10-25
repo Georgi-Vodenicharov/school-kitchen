@@ -1,8 +1,12 @@
+{% load static %}
 <footer class="site-footer">
     <div class="container footer-grid">
         <div>
-            <p class="footer-brand">&#127858; Училищна кухня</p>
-            <p class="muted">Професионална гимназия по механизация на селското стопанство „Пейо К. Яворов“, гр. Гоце Делчев</p>
+            <p class="footer-brand"><img src="{% static 'img/kitchen-logo.svg' %}" alt="" width="32" height="32"> Училищна кухня</p>
+            <div class="footer-school">
+                <img class="school-logo" src="{% static 'img/school-logo.jpg' %}" alt="Лого на ПГ по МСС „Пейо К. Яворов“" width="72" height="73">
+                <p class="muted">Професионална гимназия по механизация на селското стопанство „Пейо К. Яворов“, гр. Гоце Делчев</p>
+            </div>
         </div>
         <div>
             <p class="footer-title">Меню</p>

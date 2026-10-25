@@ -1,12 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}За нас{% endblock %}
 
 {% block content %}
 <section class="prose">
-    <p class="eyebrow">За приложението</p>
-    <h1>Училищната кухня онлайн</h1>
-    <p class="lead">Приложението дигитализира работата на кухнята в ПГ по МСС „Пейо К. Яворов“, гр. Гоце Делчев. Работи като системите в ресторантите: меню, поръчки и табло за кухнята.</p>
+    <div class="about-hero">
+        <div>
+            <p class="eyebrow">За приложението</p>
+            <h1>Училищната кухня онлайн</h1>
+            <p class="lead">Приложението дигитализира работата на кухнята в Професионалната гимназия по механизация на селското стопанство „Пейо К. Яворов“, гр. Гоце Делчев. Работи като системите в ресторантите: меню, поръчки и табло за кухнята.</p>
+        </div>
+        <figure class="about-logo">
+            <img src="{% static 'img/school-logo.jpg' %}" alt="Лого на ПГ по МСС „Пейо К. Яворов“" width="200" height="203">
+            <figcaption>ПГ по МСС „Пейо К. Яворов“</figcaption>
+        </figure>
+    </div>
 
     <div class="feature-grid">
         <article class="card card-pad">

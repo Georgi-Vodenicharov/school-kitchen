@@ -1,8 +1,8 @@
-{% load kitchen_tags %}
+{% load static kitchen_tags %}
 <header class="site-header">
     <nav class="container navbar">
         <a class="brand" href="{% url 'common:home' %}">
-            <span class="brand-mark" aria-hidden="true">&#127858;</span>
+            <img class="brand-logo" src="{% static 'img/kitchen-logo.svg' %}" alt="Лого на Училищна кухня" width="48" height="48">
             <span class="brand-text">
                 <strong>Училищна кухня</strong>
                 <small>ПГ по МСС „Пейо К. Яворов“</small>
